@@ -3,14 +3,11 @@ import './App.css';
 
 const App = () => {
   const [counters, setCounters] = useState([]);
+ const intervalIds = useRef({}); 
 
-  
   const handleAddCounter = () => {
     setCounters([...counters, { id: Date.now(), count: 0, running: false}]);
   };
-
-    const intervalIds = useRef({}); 
-
   const handleStartCounter = (id) => {
     setCounters((prev) =>
       prev.map((counter) =>
@@ -37,12 +34,13 @@ const App = () => {
   };
 
 
-  
   useEffect(() => {
-  return () => {
-    Object.values(intervalIds.current).forEach(id => id && clearInterval(id));
-  };
-}, []);
+    return () => {
+      Object.values(intervalIds).forEach((intervalId) => {
+        if (intervalId) clearInterval(intervalId);
+      });
+    };
+  }, []);
 
   const totalCount = counters.reduce((sum, counter) => sum + counter.count, 0);
   return (
